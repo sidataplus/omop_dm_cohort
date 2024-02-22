@@ -1,21 +1,14 @@
-WITH desc_condition AS ( -- All descendants of the 201826 T2DM SNOMED concept
+WITH desc_con AS ( -- All descendants of the 201826 T2DM SNOMED concept
     SELECT c.descendant_concept_id
     FROM vocab.concept_ancestor c
-    WHERE c.ancestor_concept_id = 201826 -- base query 
-),
-
-desc_complication AS (
-    SELECT c.descendant_concept_id
-    FROM vocab.concept_ancestor c
-    WHERE c.ancestor_concept_id = 443732 -- base query 
-),
-
-desc_con AS (
-    SELECT descendant_concept_id
-    FROM desc_condition
+    WHERE c.ancestor_concept_id = 201826 -- base query
+    AND c.descendant_concept_id != 4063043 -- we have to remove pre-diabetes code
     UNION
-    SELECT descendant_concept_id
-    FROM desc_complication
+    SELECT c.descendant_concept_id
+    FROM vocab.concept_ancestor c
+    WHERE c.ancestor_concept_id = 443732 -- for T2DM complications
+    UNION
+    SELECT (443735) -- manually Added missing ICD10 equivalent "E110" code : "Type 2 diabetes mellitus with hyperosmolarity without nonketotic hyperglycemic-hyperosmolar coma"
 ),
 
 p_info AS ( -- Get patients info
