@@ -10,6 +10,7 @@ WITH fbs AS (
     FROM [cdm].[measurement] m
     WHERE m.measurement_concept_id = 3004501
     AND m.measurement_datetime BETWEEN '2013-06-01' AND '2023-09-30'
+    AND CAST(m.measurement_datetime AS TIME) < '10:00:00'
 ),
 
 -- getting hba1c data
@@ -68,42 +69,45 @@ fbs_hb_crit AS (
 ),
 
 ogtt_hn AS (
-    SElECT  o.person_id
+    SElECT  o.person_id, 3 as lab
     FROM ogtt o
     WHERE TRY_CAST(o.value as float) >= 200
     GROUP BY o.person_id
 ), -- n_patients = 1737
 
 fbs_hn AS (
-    SELECT person_id
+    SELECT person_id, 0 as lab
     FROM fbs_crit
     WHERE cnt > 2
 ), -- n_patients = 57427
 
 hba1c_hn AS (
-    SELECT person_id
+    SELECT person_id, 1 as lab
     FROM hba1c_crit
     WHERE cnt > 2
 ), -- n_patients = 58969
 
 fbs_hb_hn AS (
-    SELECT person_id
+    SELECT person_id, 2 as lab
     FROM fbs_hb_crit
     WHERE total_count = 2
 ) -- n_patients = 8584
 
 -- getting the final list of patients
-SELECT person_id
-FROM hba1c_hn
-UNION 
-SELECT person_id
-FROM fbs_hn
-UNION
-SELECT person_id
-FROM fbs_hb_hn
-UNION
-SELECT person_id
-FROM ogtt_hn
+SELECT person_id, MIN(lab) as lab_diag FROM (
+    SELECT person_id, lab
+    FROM fbs_hn
+    UNION 
+    SELECT person_id, lab
+    FROM hba1c_hn
+    UNION
+    SELECT person_id, lab
+    FROM fbs_hb_hn
+    UNION
+    SELECT person_id, lab
+    FROM ogtt_hn
+) all_hn
+GROUP BY person_id
 -- total number 72092 pt.
 
 --------------------------------------------

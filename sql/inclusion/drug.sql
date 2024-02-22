@@ -1,5 +1,8 @@
-WITH drug_list AS (
-    SELECT d.drug_exposure_id, d.drug_exposure_start_date, d.drug_source_value
+WITH drug_order AS (
+    SELECT  d.person_id,
+            d.drug_source_value,
+            MIN(d.drug_exposure_start_date) as first_drug_start_date,
+            ROW_NUMBER() OVER(PARTITION BY d.person_id ORDER BY d.drug_exposure_start_date) as rn
     FROM [cdm].[drug_exposure] d
     WHERE d.drug_source_value IN (
         'GLUTB1', 'GLUTB5', 'BYEI10', 'DAOT', 'GLITB', 'GLITBC', 'DIATM',
@@ -23,12 +26,22 @@ WITH drug_list AS (
         'JARTD125', 'INVT100', 'INVT300', 'LUST5', 'LUST25', 'XIGT5',
         'XIGT10', 'ZEMT', 'GLYT10', 'GLYT25', 'RYZI', 'TRUI15', 'TRUI75',
         'XULI', 'SOLIQ33', 'SOLIQ50', 'ZAFT', 'OZEI1', 'OZEI05', 'OZEI025',
-        'RYBT3', 'RYBT7', 'RYBT14', 'TENT20', 'SUGT5', 'ZEMTM'
-) -- Full generic names drug list is available in doc/steps.md
+        'RYBT3', 'RYBT7', 'RYBT14', 'TENT20', 'SUGT5', 'ZEMTM')
 
+    GROUP BY d.person_id, d.drug_exposure_start_date, d.drug_source_value
+), -- Full generic names drug list is available in doc/steps.md
+
+p_info AS ( -- Get patients info
+    SELECT p.person_id, p.year_of_birth
+    FROM cdm.person p
 )
 
-SELECT COUNT(*)  FROM drug_list
+SELECT d.person_id,
+       d.drug_source_value,
+       (YEAR(d.first_drug_start_date) - p.year_of_birth) AS age_at_first_drug
+FROM drug_order d
+JOIN p_info p ON d.person_id = p.person_id
+WHERE d.rn = 1
 
     
 
