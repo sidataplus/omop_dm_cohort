@@ -1,10 +1,6 @@
 -- getting glucose level data
-WITH fbs AS (
-    SELECT  m.measurement_id, 
-            m.person_id, 
-            m.measurement_source_value, 
-            m.measurement_concept_id, 
-            m.[_measurement_name], 
+WITH fbs_raw AS (
+    SELECT  m.person_id, 
             m.value_source_value as value,
             m.measurement_datetime
     FROM [cdm].[measurement] m
@@ -13,15 +9,26 @@ WITH fbs AS (
     AND CAST(m.measurement_datetime AS TIME) < '10:00:00'
 ),
 
+opd_visit AS (
+    SELECT  v.person_id,
+            v.visit_start_date
+    FROM [cdm].[visit_occurrence] v
+    WHERE v.visit_start_date BETWEEN '2013-06-01' AND '2023-09-30'
+   AND v.visit_concept_id = 9202 
+),
+
+fbs AS (
+    SELECT  f.person_id,
+            f.value
+    FROM fbs_raw f
+    INNER JOIN opd_visit v ON f.person_id = v.person_id AND f.measurement_datetime BETWEEN v.visit_start_date AND DATEADD(DAY, 1, v.visit_start_date)
+-- inner join will remove all non-opd record
+),
+
 -- getting hba1c data
 hba1c AS (
-    SELECT  m.measurement_id, 
-            m.person_id, 
-            m.measurement_source_value,    
-            m.measurement_concept_id, 
-            m.[_measurement_name], 
-            m.value_source_value as value,
-            m.measurement_datetime
+    SELECT  m.person_id, 
+            m.value_source_value as value
     FROM [cdm].[measurement] m
     WHERE m.measurement_concept_id = 3004410
     AND m.measurement_datetime BETWEEN '2013-06-01' AND '2023-09-30'
@@ -32,11 +39,7 @@ hba1c AS (
 -- ** because OMOP concept code for 1st step of OGTT will include other glucose level lab
 -- ** so we will use OGTT >= 200 criteria at step 2, 3, 4 of OGTT instead
 ogtt AS (
-    SELECT  m.measurement_id, 
-            m.person_id, 
-            m.measurement_source_value, 
-            m.measurement_concept_id, 
-            m.[_measurement_name], 
+    SELECT  m.person_id, 
             m.value_source_value as value
     FROM [cdm].[measurement] m
     WHERE m.measurement_concept_id IN (3006717, 3014716, 3027457)
