@@ -27,7 +27,6 @@ WITH drug_order AS (
         'XIGT10', 'ZEMT', 'GLYT10', 'GLYT25', 'RYZI', 'TRUI15', 'TRUI75',
         'XULI', 'SOLIQ33', 'SOLIQ50', 'ZAFT', 'OZEI1', 'OZEI05', 'OZEI025',
         'RYBT3', 'RYBT7', 'RYBT14', 'TENT20', 'SUGT5', 'ZEMTM')
-
     GROUP BY d.person_id, d.drug_exposure_start_date, d.drug_source_value
 ), -- Full generic names drug list is available in doc/steps.md
 
@@ -38,6 +37,7 @@ p_info AS ( -- Get patients info
 
 SELECT d.person_id,
        d.drug_source_value,
+         d.first_drug_start_date,
        (YEAR(d.first_drug_start_date) - p.year_of_birth) AS age_at_first_drug
 FROM drug_order d
 JOIN p_info p ON d.person_id = p.person_id

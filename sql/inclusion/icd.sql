@@ -29,6 +29,7 @@ diag_info AS ( -- get the first diagnosis of T2DM for each patient
 
 SELECT  d.person_id,
         d.condition_concept_id,
+        d.first_diag,
         (YEAR(d.first_diag) - p.year_of_birth) AS age_at_first_diag
 FROM diag_info d
 JOIN p_info p ON d.person_id = p.person_id
