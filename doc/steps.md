@@ -82,3 +82,14 @@ The inclusion critieria of previously built cohort are as follows
 <br />
 
 Previously built cohort was build with the study period of *June 2013 - Sep 2023.* Although the OMOP data have more data than this period. For the comparison purpose, we will limit the data to this period.
+
+### 2. Exclusion
+
+Exclude patients that are unlikely to have Hypertensive disorder using these exclusion criterias
+
+'''
+1. in Pt. included by Drug-only, exclude pt. with SGLT2 and Heart failure
+2. in Pt. included by Drug-only, exclude pt. with SGLT2 and CKD
+3. in Pt. included by Drug-only, exclude pt. with GLP1 and obesity
+4. Exclude Pt. with T1DM
+5. Exclude Pt. with age < 18 at their 1st inclusion into this dataset>
