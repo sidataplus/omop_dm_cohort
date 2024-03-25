@@ -60,6 +60,7 @@ fbs_crit AS (
     FROM fbs f
 ),
 
+
 hba1c_crit AS (
     SELECT  h.person_id,
             h.measurement_datetime,
@@ -100,7 +101,7 @@ fbs_hn AS (
             0 as lab
     FROM fbs_crit
     WHERE rn = 2
-), 
+),
 
 hba1c_hn AS (
     SELECT person_id,
@@ -108,7 +109,7 @@ hba1c_hn AS (
             1 as lab
     FROM hba1c_crit
     WHERE rn = 2
-), 
+),
 
 fbs_hb_hn AS (
     SELECT person_id,
@@ -117,6 +118,7 @@ fbs_hb_hn AS (
     FROM fbs_hb_crit
     WHERE rn = 2 
 ) 
+
 
 -- getting the final list of patients
 SELECT person_id, MIN(first_date) as first_diag_datetime FROM (
@@ -137,21 +139,22 @@ GROUP BY person_id
 
 
 
---------------------------------------------
---- Note
--- HbA1c Use measurement_source_value = 5099
--- concept = 3004410
 
--- Glucose concept = 3004501
--- 400317	Blood sugar
--- 0322	Glucose tolerance 1
--- 5103	Glucose heparin
--- 0013	Glucose (NaF)
+-- --------------------------------------------
+-- --- Note
+-- -- HbA1c Use measurement_source_value = 5099
+-- -- concept = 3004410
 
--- OGTT
--- measurement_source_value = '0321','0322','0323','0324','0325','0326'
--- concept = 3014716
--- 3004501	0322 -- 1st step of OGTT --> means fasting glucose
--- 3006717	0324
--- 3014716	0323
--- 3027457	0325
+-- -- Glucose concept = 3004501
+-- -- 400317	Blood sugar
+-- -- 0322	Glucose tolerance 1
+-- -- 5103	Glucose heparin
+-- -- 0013	Glucose (NaF)
+
+-- -- OGTT
+-- -- measurement_source_value = '0321','0322','0323','0324','0325','0326'
+-- -- concept = 3014716
+-- -- 3004501	0322 -- 1st step of OGTT --> means fasting glucose
+-- -- 3006717	0324
+-- -- 3014716	0323
+-- -- 3027457	0325

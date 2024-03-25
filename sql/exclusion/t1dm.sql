@@ -17,7 +17,6 @@ diag_info AS ( -- get the first diagnosis of T2DM for each patient
             ROW_NUMBER() OVER(PARTITION BY co.person_id ORDER BY co.condition_start_datetime) as rn
     FROM cdm.condition_occurrence co
     JOIN desc_con d ON co.condition_concept_id = d.descendant_concept_id
-    WHERE co.condition_start_datetime BETWEEN '2013-06-01' AND '2023-09-30'
     GROUP BY co.person_id, co.condition_concept_id, co.condition_start_datetime
 )
 

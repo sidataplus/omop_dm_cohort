@@ -27,6 +27,7 @@ WITH drug_order AS (
         'XIGT10', 'ZEMT', 'GLYT10', 'GLYT25', 'RYZI', 'TRUI15', 'TRUI75',
         'XULI', 'SOLIQ33', 'SOLIQ50', 'ZAFT', 'OZEI1', 'OZEI05', 'OZEI025',
         'RYBT3', 'RYBT7', 'RYBT14', 'TENT20', 'SUGT5', 'ZEMTM')
+    AND d.drug_exposure_start_date BETWEEN '2013-06-01' AND '2023-09-30'
     GROUP BY d.person_id, d.drug_exposure_start_date, d.drug_source_value
 ), -- Full generic names drug list is available in doc/steps.md
 
