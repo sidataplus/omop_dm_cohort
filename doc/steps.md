@@ -92,4 +92,5 @@ Exclude patients that are unlikely to have Hypertensive disorder using these exc
 2. in Pt. included by Drug-only, exclude pt. with SGLT2 and CKD
 3. in Pt. included by Drug-only, exclude pt. with GLP1 and obesity
 4. Exclude Pt. with T1DM
-5. Exclude Pt. with age < 18 at their 1st inclusion into this dataset>
+5. Exclude Pt. with age < 18 at their 1st inclusion into this dataset
+'''>
