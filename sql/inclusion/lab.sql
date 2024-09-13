@@ -3,7 +3,7 @@ WITH fbs_raw AS (
     SELECT  m.person_id, 
             m.value_source_value as value,
             m.measurement_datetime
-    FROM [cdm].[measurement] m
+    FROM [omop].[measurement] m
     WHERE m.measurement_concept_id = 3004501
     AND m.measurement_datetime BETWEEN '2013-06-01' AND '2023-09-30'
     AND CAST(m.measurement_datetime AS TIME) < '10:00:00'
@@ -12,7 +12,7 @@ WITH fbs_raw AS (
 opd_visit AS (
     SELECT  v.person_id,
             v.visit_start_date
-    FROM [cdm].[visit_occurrence] v
+    FROM [omop].[visit_occurrence] v
     WHERE v.visit_start_date BETWEEN '2013-06-01' AND '2023-09-30'
    AND v.visit_concept_id = 9202 
 ),
@@ -33,7 +33,7 @@ hba1c AS (
     SELECT  m.person_id, 
             m.value_source_value as value,
             m.measurement_datetime
-    FROM [cdm].[measurement] m
+    FROM [omop].[measurement] m
     WHERE m.measurement_concept_id = 3004410
     AND TRY_CAST(m.value_source_value as DECIMAL(4,1)) >= 6.5
     AND m.measurement_datetime BETWEEN '2013-06-01' AND '2023-09-30'
@@ -47,8 +47,8 @@ ogtt AS (
     SELECT  m.person_id, 
             m.value_source_value as value,
             m.measurement_datetime
-    FROM [cdm].[measurement] m
-    WHERE m.measurement_concept_id IN (3006717, 3014716, 3027457)
+    FROM [omop].[measurement] m
+    WHERE m.measurement_concept_id IN (3014716, 3027457, 3006717)
     AND m.measurement_datetime BETWEEN '2013-06-01' AND '2023-09-30'
 ),
 

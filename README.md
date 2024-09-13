@@ -4,3 +4,4 @@ This cohort was originally built on Siriraj Hospital Type 2 Diabetes Mellitus pa
 
 ### Procedure
 - Constructing steps of this cohort can be read in doc/steps
+

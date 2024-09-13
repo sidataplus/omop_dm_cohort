@@ -2,3 +2,6 @@
 .dump
 data
 debug
+notebook/data
+.conda
+atlas_cohort

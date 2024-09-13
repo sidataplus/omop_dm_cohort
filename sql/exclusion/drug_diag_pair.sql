@@ -3,10 +3,10 @@ WITH all_union_cond AS (
             MIN(hf.condition_start_date) as first_hf_date,
             NULL as first_ckd_date,
             NULL as first_obs_date
-    FROM cdm.condition_occurrence hf
+    FROM omop.condition_occurrence hf
     WHERE EXISTS (
         SELECT 1
-        FROM vocab.concept_ancestor c
+        FROM omop.concept_ancestor c
         WHERE c.ancestor_concept_id = 316139 -- heart failure
         AND hf.condition_concept_id = c.descendant_concept_id
     )
@@ -16,10 +16,10 @@ WITH all_union_cond AS (
             NULL as first_hf_date,
             MIN(ckd.condition_start_date) as first_ckd_date,
             NULL as first_obs_date
-    FROM cdm.condition_occurrence ckd
+    FROM omop.condition_occurrence ckd
     WHERE EXISTS (
         SELECT 1
-        FROM vocab.concept_ancestor c
+        FROM omop.concept_ancestor c
         WHERE c.ancestor_concept_id = 46271022 -- ckd code
         AND ckd.condition_concept_id = c.descendant_concept_id
     )
@@ -29,10 +29,10 @@ WITH all_union_cond AS (
             NULL as first_hf_date,
             NULL as first_ckd_date,
             MIN(obs.condition_start_date) as first_obs_date
-    FROM cdm.condition_occurrence obs
+    FROM omop.condition_occurrence obs
     WHERE EXISTS (
         SELECT 1
-        FROM vocab.concept_ancestor c
+        FROM omop.concept_ancestor c
         WHERE c.ancestor_concept_id = 433736 -- obesity code
         AND obs.condition_concept_id = c.descendant_concept_id
     )
@@ -55,7 +55,7 @@ all_drug_start AS (
         FROM (
             SELECT d.person_id,
                     d.drug_exposure_start_date as sglt2_start_date
-            FROM cdm.drug_exposure d
+            FROM omop.drug_exposure d
             WHERE d.drug_source_value IN ('FORT10', 'JART10', 'JART25', 'INVT100', 'INVT300', 'LUST5', 'LUST25')
         ) sglt2_date
         UNION ALL
@@ -63,7 +63,7 @@ all_drug_start AS (
         FROM (
             SELECT d.person_id,
                     d.drug_exposure_start_date as glp_start_date
-            FROM cdm.drug_exposure d
+            FROM omop.drug_exposure d
             WHERE d.drug_source_value IN ('BYEI10', 'SAXI', 'VICIP18', 'TRUI15', 'TRUI75', 'OZEI1', 'OZEI05', 'OZEI025', 'RYBT3', 'RYBT7', 'RYBT14')
         ) glp_date
     ) ud
