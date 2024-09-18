@@ -32,5 +32,5 @@ SELECT  d.person_id,
         d.first_diag,
         (YEAR(d.first_diag) - p.year_of_birth) AS age_at_first_diag
 FROM diag_info d
-JOIN p_info p ON d.person_id = p.person_id
+LEFT JOIN p_info p ON d.person_id = p.person_id
 WHERE d.rn = 1
